@@ -1,0 +1,64 @@
+BASIC:
+  CKPT_DIR: '/disk3/zt/code/4_a/1_ECM_no_inv_drop'
+  SEED: 1
+  WORKERS: 8
+  CREATE_OUTPUT_DIR: True
+  BACKUP_CODES: True
+  BACKUP_LIST: ['lib', 'experiments', 'tools']
+  BACKUP_DIR: 'output/anet13/anet13_0.2348_ok_vis_select_from_json_cas_gt/codes'
+  LOG_DIR: 'logs/anet13/anet13_0.2348_ok_vis_select_from_json_cas_gt'
+  SHOW_CFG: False
+  VERBOSE: True
+  PIN_MEMORY: True
+  CHECKPOINT_DIGITS: 4
+
+
+DATASET:
+  NAME: "ActivityNet1.3"
+  DATA_DIR: 'data/ActivityNet1.3/I3D_resize100'
+  TRAIN_SPLIT: 'training'
+  VAL_SPLIT: 'validation'
+  CLS_NUM: 200
+  GT_FILE: 'lib/dataset/materials_ActivityNet1.3/activity_net.v1-3.min.json'
+  NUM_SEGMENTS: 100
+
+NETWORK:
+  FEAT_DIM: 2048
+  TOPK_K_R: 0.6 # K = roud(NUM_SEGMENTS * TOPK_K_R)
+  CASMODULE_DROPOUT: 0.5
+
+
+TRAIN:
+  LR: 0.0002
+  BETAS: [0.9, 0.999]
+  WEIGHT_DECAY: 0.0005
+  BATCH_SIZE: 128   #thumos is 16
+  EPOCH_NUM: 36  #BaSNet is 1500 batch (batch size is 16) and evaluate per iteration, convert to epoch is 1500/(200/16)=120
+  SPARSITY_COEF: 0.1
+  LR_DECAY_EPOCHS: [26] #[70]
+  LR_DECAY_FACTOR: 0.1
+  OUTPUT_DIR: 'output/anet13/anet13_0.2348_ok_vis_select_from_json_cas_gt'
+  LOSS_CAS_COEF: 1
+  LOSS_CAM_COEF: 1
+  LOSS_CONSISTENCY_COEF: 0 #0.1
+  C_LOSS_CAM_FG_INV: 0
+
+TEST:
+  BATCH_SIZE: 1
+  EVAL_INTERVAL: 1
+  NMS_THRESHOLD: 0.7
+  CLS_SCORE_TH: 0.05
+  ACT_THRESH_MIN: 0
+  ACT_THRESH_MAX: 0.175
+  ACT_THRESH_STEP: 0.025
+  OUTER_LAMBDA: 0.5
+  CONF_GAMMA: 0.45
+  IOU_TH: [0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+  RESULT_DIR: 'output/anet13/anet13_0.2348_ok_vis_select_from_json_cas_gt'
+  IDX_NAME_FILE: 'lib/dataset/materials_ActivityNet1.3/idx_name_dict.pkl'
+
+
+CUDNN:
+  BENCHMARK: False
+  DETERMINISTIC: True
+  ENABLE: True

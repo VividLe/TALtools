@@ -1,0 +1,64 @@
+BASIC:
+  CKPT_DIR: '/disk/yangle/Short-Actions/ECM'
+  SEED: 0
+  WORKERS: 8
+  CREATE_OUTPUT_DIR: True
+  BACKUP_CODES: True
+  BACKUP_LIST: ['lib', 'experiments', 'tools']
+  BACKUP_DIR: 'output/anet12/ECM_baseline/codes'
+  LOG_DIR: 'logs/anet12/ECM_baseline'
+  SHOW_CFG: False
+  VERBOSE: True
+  PIN_MEMORY: True
+  CHECKPOINT_DIGITS: 4
+
+
+DATASET:
+  NAME: "ActivityNet1.2"
+  DATA_DIR: 'data/ActivityNet1.2/I3D_resize100'
+  TRAIN_SPLIT: 'training'
+  VAL_SPLIT: 'validation'
+  CLS_NUM: 100
+  GT_FILE: 'lib/dataset/materials_ActivityNet1.2/activity_net.v1-2.min.json'
+  NUM_SEGMENTS: 100
+
+NETWORK:
+  FEAT_DIM: 2048
+  TOPK_K_R: 0.25 # K = roud(NUM_SEGMENTS * TOPK_K_R)
+  CASMODULE_DROPOUT: 0.5
+
+
+TRAIN:
+  LR: 0.0002
+  BETAS: [0.9, 0.999]
+  WEIGHT_DECAY: 0.0005
+  BATCH_SIZE: 128   #thumos is 16
+  EPOCH_NUM: 36  # 40 #BaSNet is 1500 batch (batch size is 16) and evaluate per iteration, convert to epoch is 1500/(200/16)=120
+  SPARSITY_COEF: 0.1
+  LR_DECAY_EPOCHS: [] #[70]
+  LR_DECAY_FACTOR: 0.1
+  OUTPUT_DIR: 'output/anet12/ECM_baseline'
+  LOSS_CAS_COEF: 1
+  LOSS_CAM_COEF: 1
+  LOSS_CONSISTENCY_COEF: 0.05 #0.1
+  C_LOSS_CAM_FG_INV: 1
+
+TEST:
+  BATCH_SIZE: 1
+  EVAL_INTERVAL: 1
+  NMS_THRESHOLD: 0.7
+  CLS_SCORE_TH: 0.12
+  ACT_THRESH_MIN: 0
+  ACT_THRESH_MAX: 0.175
+  ACT_THRESH_STEP: 0.025
+  OUTER_LAMBDA: 0.50
+  CONF_GAMMA: 0.45
+  IOU_TH: [0.5, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+  RESULT_DIR: 'output/anet12/ECM_baseline'
+  IDX_NAME_FILE: 'lib/dataset/materials_ActivityNet1.2/idx_name_dict.pkl'
+
+
+CUDNN:
+  BENCHMARK: False
+  DETERMINISTIC: True
+  ENABLE: True
